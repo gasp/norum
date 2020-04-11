@@ -9,7 +9,7 @@ block content
 
       //- a(href=`/u/${author.uuid}`)=author.login
     p= toYmd(createdAt)
-  
+    p= author.login
   hr
 
   +contrib(contributions, toYmd)

@@ -27,19 +27,24 @@ router.get('/:id(\\d+)', async (req, res, next) => {
     if (id === 0) {
       return res.redirect(301, '/m/')
     }
-    const message = await Message.findByPk(id)
+    const message = await Message.findOne({
+      where: { id },
+      include: [User],
+    })
     const contributions = await Message.findAll({
       where: { parent_id: id },
       // order: [['createdAt', 'DESC']],
       include: [User],
     })
-    const { title, body, createdAt } = message
+    const { title, body, createdAt, User: author } = message
+    console.log({ message, user: message.User })
 
     return res.render('message', {
       id,
       title,
       body,
       createdAt,
+      author,
       contributions,
       toYmd,
     })
