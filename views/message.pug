@@ -1,6 +1,7 @@
 extends layout
 include _mixin/contrib.pug
 include _mixin/write.pug
+include _mixin/author.pug
 
 block content
   article
@@ -9,7 +10,7 @@ block content
 
       //- a(href=`/u/${author.uuid}`)=author.login
     p= toYmd(createdAt)
-    p= author.login
+    +author(author)
   hr
 
   +contrib(contributions, toYmd)

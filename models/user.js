@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       //   allowNull: false,
       //   autoIncrement: false,
       // },
+      // todo; 
+      uuid: DataTypes.STRING,
       login: DataTypes.STRING,
       // secret: DataTypes.STRING,
       createdAt: DataTypes.DATE,

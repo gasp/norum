@@ -1,0 +1,4 @@
+mixin author(user)
+  span
+    a(href=`/u/${user.uuid}`)= user.login
+    p=`${user.uuid}`

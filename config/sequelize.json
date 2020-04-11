@@ -8,8 +8,8 @@
     "storage": ":memory"
   },
   "production": {
-    "dialect": "sqlite",
-    "storage": "./database.sqlite3",
+    "dialect": "mariadb",
+    "host": "mariadb.server",
     "logging": false
   }
 }

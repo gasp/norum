@@ -53,14 +53,35 @@ router.get('/:id(\\d+)', async (req, res, next) => {
   }
 })
 
-router.post('/', upload.single('message'), (req, res, next) => {
-  console.log(req.body, req)
-  const title = req.body.title || 'untitled'
-  const file = req.file.filename
-  console.log(req.file.filename)
+router.post('/p', upload.single('message'), async (req, res, next) => {
+  try {
+    const { parent, title, body, file, login, secret } = req.body
+    const auth = await User.findAndCountAll({
+      where: { login, secret }
+    })
+    if (!auth.count) {
+      return next()
+    }
+    console.log('user', auth.rows[0].id, 'parent', parent)
+    const message = await Message.create({
+      parent_id: Number(parent),
+      title,
+      body,
+      file,
+      user_id: auth.rows[0].id
+    })
 
+    if (message) {
+      console.log(message)
+      return res.redirect(`/m/${message.id}`)
+    }
+
+  } catch (err) {
+    return next(err)
+  }
   return Message.create({
     title,
+    body,
     file,
   })
     .then(message => res.redirect(301, '/message'))
