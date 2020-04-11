@@ -2,12 +2,15 @@ extends layout
 
 block content
   h1 new experiment
-  form(method="post", action="/experiment",enctype="multipart/form-data")
+  form(method="post", action="/m",enctype="multipart/form-data")
     div
       label title
         input(type="text",name="title")
     div
+      label body
+        textarea(name="body")
+    div
       label experiment
-        input(type="file",name="experiment")
+        input(type="file",name="attachment")
     div
       input(type="submit",value="save")

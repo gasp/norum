@@ -1,0 +1,9 @@
+mixin contrib(contributions, toYmd)
+  section
+    each contribution in contributions
+      article        
+        a(href=`/m/${contribution.id}`)=contribution.title
+        span &nbsp;on #{toYmd(contribution.createdAt)} by 
+          //- a(href=`/u/${contribution.uuid}`)=contribution.login
+    else
+      article There is no contribution

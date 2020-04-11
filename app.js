@@ -7,7 +7,7 @@ const logger = require('morgan')
 const stylus = require('stylus')
 
 const indexRouter = require('./routes/index.js')
-const experimentRouter = require('./routes/experiment.js')
+const messageRouter = require('./routes/message.js')
 
 const app = express()
 
@@ -24,7 +24,8 @@ app.use(stylus.middleware(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
-app.use('/experiment', experimentRouter)
+app.use('/message', messageRouter)
+app.use('/m', messageRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

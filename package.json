@@ -7,7 +7,9 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "sequelize": "sequelize"
+    "sequelize": "sequelize",
+    "initialize": "npm run sequelize db:migrate && npm run sequelize db:seed:all",
+    "reset": "rm database.sqlite3 && npm run initialize"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

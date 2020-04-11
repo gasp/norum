@@ -1,0 +1,26 @@
+mixin write(parent)
+  form(method='post', action=`/m/p/${parent}`)
+    input(type='text', name='parent', value=parent)
+    fieldset
+      div
+        label 
+          p title
+          input(name='title')
+      div
+        label 
+          p message
+          textarea(name='message')
+      div
+        label
+          p file
+          input(type='file',name='file')
+    fieldset
+      div
+        label
+          p login
+          input(name='login')
+        label
+          p secret
+          input(name='secret', type='password')
+    div
+      input(type='submit')
