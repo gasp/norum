@@ -1,16 +1,21 @@
 extends layout
 include _mixin/contrib.pug
-include _mixin/write.pug
+include _mixin/parent.pug
 include _mixin/author.pug
+include _mixin/write.pug
 
 block content
   article
+    +parent(parent)
     h1= title
     p= body
 
       //- a(href=`/u/${author.uuid}`)=author.login
-    p= toYmd(createdAt)
-    +author(author)
+    p
+      | wrote on&nbsp;
+      =toYmd(createdAt)
+      | &nbsp;by&nbsp;
+      +author(author)
   hr
 
   +contrib(contributions, toYmd)

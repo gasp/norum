@@ -1,0 +1,8 @@
+mixin parent(message)
+  span
+    span
+      a(href='/') home
+    span &nbsp;&gt;
+    span 
+      a(href=`/m/${message.id}`)=message.title
+    span &nbsp;&gt;

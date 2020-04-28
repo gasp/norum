@@ -23,14 +23,24 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id(\\d+)', async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id, 10)
+    const id = parseInt(req.params.id, 10) || 0
+    // TODO not sure about that
     if (id === 0) {
       return res.redirect(301, '/m/')
     }
+
     const message = await Message.findOne({
       where: { id },
       include: [User],
     })
+    console.log('messsage', message)
+    console.log({id, parent_id: message.parent_id})
+    const parent = message.parent_id > 0
+    ? await Message.findOne({
+        where: { id: message.parent_id }
+      })
+    : { id: 0, title: 'root' };
+    console.log({parent})
     const contributions = await Message.findAll({
       where: { parent_id: id },
       // order: [['createdAt', 'DESC']],
@@ -45,6 +55,7 @@ router.get('/:id(\\d+)', async (req, res, next) => {
       body,
       createdAt,
       author,
+      parent,
       contributions,
       toYmd,
     })
@@ -55,16 +66,16 @@ router.get('/:id(\\d+)', async (req, res, next) => {
 
 router.post('/p', upload.single('message'), async (req, res, next) => {
   try {
-    const { parent, title, body, file, login, secret } = req.body
+    const { parent_id, title, body, file, login, secret } = req.body
     const auth = await User.findAndCountAll({
       where: { login, secret }
     })
     if (!auth.count) {
       return next()
     }
-    console.log('user', auth.rows[0].id, 'parent', parent)
+    console.log('user', auth.rows[0].id, 'parent', parent_id)
     const message = await Message.create({
-      parent_id: Number(parent),
+      parent_id: Number(parent_id),
       title,
       body,
       file,
@@ -79,19 +90,6 @@ router.post('/p', upload.single('message'), async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-  return Message.create({
-    title,
-    body,
-    file,
-  })
-    .then(message => res.redirect(301, '/message'))
-    .catch(err => {
-      console.log(
-        '***There was an error creating a message',
-        JSON.stringify(message),
-      )
-      return res.status(400).send(err)
-    })
 })
 
 router.get('/new', (req, res, next) => {
