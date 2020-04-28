@@ -1,6 +1,6 @@
 {
-  "name": "minimalist-express",
-  "version": "0.1.0",
+  "name": "norum",
+  "version": "0.1.1",
   "private": true,
   "engines": {
     "node": ">= 10.0.0"
