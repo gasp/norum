@@ -14,3 +14,6 @@ charset = utf-8
 [*.{js,json, md}]
 indent_style = space
 indent_size = 2
+
+[*.md]
+insert_final_newline = false

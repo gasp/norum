@@ -1,3 +1,4 @@
+const debug = require('debug')('app:message')
 const path = require('path')
 const { Router } = require('express')
 const multer = require('multer')
@@ -5,6 +6,15 @@ const { Message, User } = require('../models/index.js')
 const router = Router()
 const upload = multer({ dest: path.join(__dirname, '..', 'public', 'uploads') })
 const { toYmd } = require('../lib/date.js')
+
+const rootMesssage = {
+  title : 'title',
+  body: 'body',
+  createdAt: new Date(),
+  User: {
+    login: 'admin', uuid: 'admin'
+  }
+}
 
 router.get('/', async (req, res, next) => {
   try {
@@ -21,26 +31,23 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+
 router.get('/:id(\\d+)', async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10) || 0
-    // TODO not sure about that
-    if (id === 0) {
-      return res.redirect(301, '/m/')
-    }
 
-    const message = await Message.findOne({
-      where: { id },
-      include: [User],
-    })
-    console.log('messsage', message)
-    console.log({id, parent_id: message.parent_id})
+    const message = id
+      ? await Message.findOne({
+        where: { id },
+        include: [User],
+      })
+      : rootMesssage
     const parent = message.parent_id > 0
     ? await Message.findOne({
         where: { id: message.parent_id }
       })
     : { id: 0, title: 'root' };
-    console.log({parent})
+
     const contributions = await Message.findAll({
       where: { parent_id: id },
       // order: [['createdAt', 'DESC']],
