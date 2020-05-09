@@ -8,6 +8,7 @@ const stylus = require('stylus')
 
 const indexRouter = require('./routes/index.js')
 const messageRouter = require('./routes/message.js')
+const authRouter = require('./routes/auth.js')
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', indexRouter)
 app.use('/message', messageRouter)
 app.use('/m', messageRouter)
+app.use('/', authRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

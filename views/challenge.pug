@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1 signup
+  p 2/3
+  form(method="post", action="/challenge")
+    if error
+      div.error= error
+    p welcome 
+      b=login
+      | , please answer to this simple question
+      | to prove that you are not a robot.
+    p your answer is a single lowercase word
+    input(type="hidden", name="token", value=token)
+    input(type="hidden", name="login", value=login)
+    div
+      label=question
+        input(type="text", name="attempt", autofocus)
+    input(type="submit", value="send")

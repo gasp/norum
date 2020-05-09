@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1 signup
+  p 3/3
+  p congratulations, 
+    b=login
+    |  account has been created
+  pre
+    | login: #{login}
+    | secret: #{secret}
+
+  p keep preciously this password because there is no way to get it back
