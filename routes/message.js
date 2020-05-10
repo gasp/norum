@@ -33,16 +33,16 @@ const hierarchy = async id => {
 
 const parents = async id => {
   const query = `
-  WITH RECURSIVE parents(id, title, parent_id) AS (
-      SELECT id, title, parent_id from Messages where id = ${id || 0}
+  WITH RECURSIVE parents(id, title, parent_id, level) AS (
+      SELECT id, title, parent_id, 0 from Messages where id = ${id || 0}
       UNION ALL
-      SELECT Messages.id, Messages.title, Messages.parent_id
+      SELECT Messages.id, Messages.title, Messages.parent_id, parents.level + 1
       FROM Messages, parents
       WHERE parents.parent_id = Messages.id AND Messages.id > 0
   )
-  SELECT id, title, parent_id FROM parents`
+  SELECT id, title, parent_id, level FROM parents ORDER BY level DESC`
 
-  const list = await sequelize.query(query)
+  const list = await sequelize.query(query, { type: QueryTypes.SELECT })
   return list
 }
 
@@ -87,7 +87,7 @@ router.get('/:id(\\d+)', async (req, res, next) => {
     const { title, body, createdAt, User: author } = message
     console.log({ message, user: message.User })
 
-    const breadcrumbs = await parents(id).then(br => br.shift().reverse())
+    const breadcrumbs = await parents(id)
 
     return res.render('message', {
       id,
