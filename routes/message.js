@@ -2,18 +2,48 @@ const debug = require('debug')('app:message')
 const path = require('path')
 const { Router } = require('express')
 const multer = require('multer')
-const { Message, User } = require('../models/index.js')
+const { Message, User, sequelize } = require('../models/index.js')
 const router = Router()
 const upload = multer({ dest: path.join(__dirname, '..', 'public', 'uploads') })
 const { toYmd } = require('../lib/date.js')
 
 const rootMesssage = {
-  title : 'title',
-  body: 'body',
+  id: 0,
+  title : 'welcome',
+  body: 'please be polite',
   createdAt: new Date(),
   User: {
-    login: 'admin', uuid: 'admin'
+    login: 'root', uuid: 'root'
   }
+}
+
+
+const hierarchy = async id => {
+  const query = `
+  WITH RECURSIVE paths(id, name, path) AS (
+      SELECT id, title, title from Messages where parent_id = 0
+      UNION
+      SELECT Messages.id, Messages.title, paths.path || '/' || Messages.title
+      FROM Messages JOIN paths WHERE Messages.parent_id = Messages.id
+  )
+  SELECT id, path FROM paths`
+  const h = await sequelize.query(query);
+  console.log(h)
+}
+
+const parents = async id => {
+  const query = `
+  WITH RECURSIVE parents(id, title, parent_id) AS (
+      SELECT id, title, parent_id from Messages where id = ${id || 0}
+      UNION ALL
+      SELECT Messages.id, Messages.title, Messages.parent_id
+      FROM Messages, parents
+      WHERE parents.parent_id = Messages.id AND Messages.id > 0
+  )
+  SELECT id, title, parent_id FROM parents`
+
+  const list = await sequelize.query(query)
+  return list
 }
 
 router.get('/', async (req, res, next) => {
@@ -31,7 +61,6 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-
 router.get('/:id(\\d+)', async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10) || 0
@@ -42,11 +71,13 @@ router.get('/:id(\\d+)', async (req, res, next) => {
         include: [User],
       })
       : rootMesssage
+
     const parent = message.parent_id > 0
     ? await Message.findOne({
-        where: { id: message.parent_id }
+        where: { id: message.parent_id },
+        include: [User],
       })
-    : { id: 0, title: 'root' };
+    : rootMesssage
 
     const contributions = await Message.findAll({
       where: { parent_id: id },
@@ -56,6 +87,8 @@ router.get('/:id(\\d+)', async (req, res, next) => {
     const { title, body, createdAt, User: author } = message
     console.log({ message, user: message.User })
 
+    const breadcrumbs = await parents(id).then(br => br.shift().reverse())
+
     return res.render('message', {
       id,
       title,
@@ -64,6 +97,7 @@ router.get('/:id(\\d+)', async (req, res, next) => {
       author,
       parent,
       contributions,
+      breadcrumbs,
       toYmd,
     })
   } catch (err) {

@@ -1,8 +1,9 @@
 mixin parent(message)
-  span
-    span
-      a(href='/') home
-    span &nbsp;&gt;
-    span 
-      a(href=`/m/${message.id}`)=message.title
-    span &nbsp;&gt;
+  blockquote
+    p 
+      span answering to &lt;
+      span= message.User.login
+      span &gt; in 
+      a(href=`/m/${message.id}`)= message.title
+      span :
+    div= message.body

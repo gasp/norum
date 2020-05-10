@@ -1,0 +1,5 @@
+mixin breadcrumbs(messages)
+  p
+    each message in messages
+      a(href=`/m/${message.id}`)= message.title
+      span &nbsp;&gt;&nbsp;

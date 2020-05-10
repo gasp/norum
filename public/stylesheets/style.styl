@@ -1,7 +1,49 @@
+primary = #c2bfc0
+secondary = #292929
+
 body
-  padding: 50px
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
-  background-color #292929
-  color #c2bfc0
+  padding 50px
+  font 14px "Lucida Grande", Helvetica, Arial, sans-serif
+  background-color secondary
+  color primary
 a
-  color: #00B7FF
+  color #00b7ff
+
+.error
+  background-color pink
+  color secondary
+  margin 1em 0
+  padding .5em
+
+blockquote
+  margin-left 1em
+  padding-left 1em
+  border-left 2px solid primary
+
+pre
+  font-family monospace
+  background-color #424040 // or ff6666
+  padding 1.5em
+
+form
+  font-family monospace
+  label
+    display block
+  input
+    display block
+    color primary
+    background-color secondary
+    border 1px solid primary
+    padding .2em
+    font-family monospace
+
+    &:hover, &:focus
+      color secondary
+      background-color primary
+
+    &[type=submit]
+      margin-top .5em
+
+  fieldset
+    &:focus-within
+      background-color pink

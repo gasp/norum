@@ -1,13 +1,15 @@
 extends layout
 include _mixin/contrib.pug
 include _mixin/parent.pug
+include _mixin/breadcrumbs.pug
 include _mixin/author.pug
 include _mixin/write.pug
 
 block content
   article
-    +parent(parent)
+    +breadcrumbs(breadcrumbs)
     h1= title
+    +parent(parent)
     p= body
 
       //- a(href=`/u/${author.uuid}`)=author.login
